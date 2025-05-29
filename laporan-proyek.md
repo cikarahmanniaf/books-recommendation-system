@@ -39,9 +39,6 @@ Menerapkan teknik User-Based dan Item-Based Collaborative Filtering, serta matri
 - Content-Based Filtering (CBF):
 Membangun representasi preferensi pengguna berdasarkan metadata buku seperti genre, penulis, dan sinopsis, guna merekomendasikan buku dengan konten yang serupa dengan minat pengguna.
 
-- Evaluasi Model:
-Melakukan evaluasi menggunakan metrik seperti Root Mean Square Error (RMSE) untuk mengukur akurasi prediksi rating, serta Precision, Recall, dan F1-score untuk menilai kualitas rekomendasi, sehingga dapat membandingkan performa kedua metode secara objektif.
-
 ## Data Understanding
 Dataset yang digunakan dalam proyek ini berasal dari [Book Recommendation Dataset](https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset/data) yang tersedia di Kaggle. Dataset ini terdiri dari tiga file utama yang memuat informasi pengguna, buku, dan interaksi rating:
 
@@ -69,7 +66,7 @@ Dataset yang digunakan dalam proyek ini berasal dari [Book Recommendation Datase
 | Variabel   | Deskripsi                          |
 |------------|----------------------------------|
 | `User-ID`  | ID unik pengguna                 |
-| `Location` | Lokasi pengguna (kota, negara)   |
+| `Location` | Lokasi pengguna   |
 | `Age`      | Usia pengguna                   |
 
 #### Ratings.csv
