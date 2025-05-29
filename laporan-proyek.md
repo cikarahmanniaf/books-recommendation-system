@@ -43,14 +43,43 @@ Membangun representasi preferensi pengguna berdasarkan metadata buku seperti gen
 Melakukan evaluasi menggunakan metrik seperti Root Mean Square Error (RMSE) untuk mengukur akurasi prediksi rating, serta Precision, Recall, dan F1-score untuk menilai kualitas rekomendasi, sehingga dapat membandingkan performa kedua metode secara objektif.
 
 ## Data Understanding
-Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
+Dataset yang digunakan dalam proyek ini berasal dari [Book Recommendation Dataset](https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset/data) yang tersedia di Kaggle. Dataset ini terdiri dari tiga file utama yang memuat informasi pengguna, buku, dan interaksi rating:
 
-Selanjutnya, uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
+- Books.csv: Metadata buku  
+- Users.csv: Data pengguna  
+- Ratings.csv: Data rating pengguna terhadap buku  
 
-Variabel-variabel pada Restaurant UCI dataset adalah sebagai berikut:
-- accepts : merupakan jenis pembayaran yang diterima pada restoran tertentu.
-- cuisine : merupakan jenis masakan yang disajikan pada restoran.
-- dst
+### Deskripsi Variabel
+
+#### Books.csv
+
+| Variabel           | Deskripsi                          |
+|--------------------|----------------------------------|
+| `ISBN`             | Kode unik buku                   |
+| `Book-Title`       | Judul buku                      |
+| `Book-Author`      | Penulis buku                    |
+| `Year-Of-Publication` | Tahun terbit buku              |
+| `Publisher`        | Penerbit buku                   |
+| `Image-URL-S`      | URL gambar sampul ukuran kecil  |
+| `Image-URL-M`      | URL gambar sampul ukuran sedang |
+| `Image-URL-L`      | URL gambar sampul ukuran besar  |
+
+#### Users.csv
+
+| Variabel   | Deskripsi                          |
+|------------|----------------------------------|
+| `User-ID`  | ID unik pengguna                 |
+| `Location` | Lokasi pengguna (kota, negara)   |
+| `Age`      | Usia pengguna                   |
+
+#### Ratings.csv
+
+| Variabel     | Deskripsi                               |
+|--------------|---------------------------------------|
+| `User-ID`    | ID pengguna yang memberikan rating     |
+| `ISBN`       | Kode unik buku yang diberi rating      |
+| `Book-Rating`| Nilai rating yang diberikan (0-10)    |
+
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
 - Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
