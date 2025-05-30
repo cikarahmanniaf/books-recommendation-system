@@ -42,8 +42,7 @@ Membangun representasi preferensi pengguna berdasarkan metadata buku seperti gen
 ## Data Understanding
 Dataset yang digunakan dalam proyek ini berasal dari [Book Recommendation Dataset](https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset/data) yang tersedia di Kaggle. Dataset ini terdiri dari tiga file utama yang memuat informasi pengguna, buku, dan interaksi rating:
 
-- Books.csv: Metadata buku  
-- Users.csv: Data pengguna  
+- Books.csv: Metadata buku   
 - Ratings.csv: Data rating pengguna terhadap buku  
 
 ### Deskripsi Variabel
@@ -60,14 +59,6 @@ Dataset yang digunakan dalam proyek ini berasal dari [Book Recommendation Datase
 | `Image-URL-S`      | URL gambar sampul ukuran kecil  |
 | `Image-URL-M`      | URL gambar sampul ukuran sedang |
 | `Image-URL-L`      | URL gambar sampul ukuran besar  |
-
-#### Users.csv
-
-| Variabel   | Deskripsi                          |
-|------------|----------------------------------|
-| `User-ID`  | ID unik pengguna                 |
-| `Location` | Lokasi pengguna   |
-| `Age`      | Usia pengguna                   |
 
 #### Ratings.csv
 
