@@ -370,5 +370,39 @@ Top-5 Rekomendasi dari Model:
 - Dilbert: A Book of Postcards
 - The Two Towers (The Lord of the Rings, Part 2)
 
+---
 ## Conclusion & Recommendation
+### Conclusion
+
+Berdasarkan eksperimen dan evaluasi yang telah dilakukan, berikut kesimpulan utama dari proyek ini:
+
+1. Personalisasi Rekomendasi
+   Sistem rekomendasi berbasis *Collaborative Filtering (CF)* berhasil mempersonalisasi daftar bacaan berdasarkan rating pengguna. Model neural network yang dibangun mampu mempelajari pola interaksi antara pengguna dan buku, menghasilkan rekomendasi yang lebih sesuai dengan preferensi pribadi masing-masing user.
+
+2. Relevansi Berdasarkan Konten
+   Dengan memanfaatkan metadata buku seperti judul dan penulis, pendekatan *Content-Based Filtering (CBF)* dapat menghasilkan rekomendasi buku yang mirip secara konten. Hasil evaluasi menggunakan metrik Precision@5 menunjukkan tingkat relevansi yang cukup tinggi (*precision = 0.80*), menandakan bahwa pendekatan ini efektif dalam mengenali kesamaan konten antar buku.
+
+3. Perbandingan Performa Model
+   Dari sisi kinerja model:
+   - Model CF menghasilkan **RMSE validasi sebesar 0.1833**, menunjukkan prediksi rating yang cukup akurat.
+   - Model CBF memiliki **Precision@5 sebesar 0.80**, menunjukkan 80% buku yang direkomendasikan memang sesuai dengan selera user berdasarkan buku yang disukai.
+
+   Setiap pendekatan memiliki kelebihan dan kekurangan:
+   - CBF unggul dalam menghadapi masalah *cold start* item, karena hanya butuh metadata buku.
+   - CF unggul dalam personalisasi, tetapi membutuhkan cukup banyak data interaksi dan sensitif terhadap user baru (*cold start problem*).
+
+---
+
+### Recommendation
+
+Berdasarkan hasil dan keterbatasan masing-masing metode, pendekatan terbaik untuk sistem rekomendasi buku adalah:
+
+> Menggabungkan Collaborative Filtering dan Content-Based Filtering dalam model Hybrid Recommender System.
+
+Dengan sistem Hybrid, dapat memanfaatkan keunggulan kedua pendekatan:
+- Menggabungkan personalisasi dari CF
+- Menggabungkan relevansi konten dari CBF
+- Mengurangi masalah cold start
+
+Dengan mengimplementasikan model hybrid, sistem rekomendasi akan lebih fleksibel, akurat, dan mampu beradaptasi terhadap berbagai kondisi data dan jenis pengguna.
 
