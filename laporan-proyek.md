@@ -68,9 +68,55 @@ Dataset yang digunakan dalam proyek ini berasal dari [Book Recommendation Datase
 | `ISBN`       | Kode unik buku yang diberi rating      |
 | `Book-Rating`| Nilai rating yang diberikan (0-10)    |
 
+### Exploratory Data Analysis (EDA)
+Sebelum dilakukan preparasi data, dilakukan eksplorasi data terlebih dahulu agar karakteristik dari dataset diketahui. Pada kasus ini, dilakukan tahapan EDA secara univariat untuk masing-masing dataset sebagai berikut.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
+1. Books Univariate EDA
+- Pemeriksaan nama variabel, tipe data, dan missing value. Ada variabel non relevan yang nantinya akan di drop, ada missing value pada 'Book-Author' dan 'Publisher' yang akan diisi dengan string 'Unknown'
+- Pemeriksaan duplikasi data keseluruhan dan primary key
+- Pemeriksaan nilai unik pada 'Year-of-Publication' karena ada nilai non numerik/year sehingga diasumsikan adanya salah input (data kotor)
+- Visualisasi penulis dengan buku terbanyak, penerbit dengan buku terbanyak, dan judul buku paling umum.
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/1589df60-4dce-4e0e-a630-56dcbd3d7408" alt="Top 10 Penulis dengan Buku Terbanyak" width="600"/>
+  <img src="https://github.com/user-attachments/assets/83fd0ab9-2fd9-4aa9-b697-cca4ea509584" alt="Top 10 Penerbit dengan Buku Terbanyak" width="600"/>
+  <img src="https://github.com/user-attachments/assets/7088c167-6876-436e-b8d5-924b6abe7402" alt="Judul Buku Paling Umum" width="600"/>
+</div>
+
+- Validasi data panjang ISBN
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/ed907a68-1179-46e1-a601-20868b8f154d" alt="Distribusi Panjang ISBN" width="600"/>
+</div>
+
+Dalam grafik tersebut, diketahui bahwa panjang ISBN sudah benar ada di angka '10' untuk keseluruhan.
+  
+2. Ratings Univariate EDA
+- Pemeriksaan nama variabel, tipe data, dan missing value
+- Pemeriksaan duplikasi data ditemukan adanya duplikasi User-ID sebanyak '1044497'. User-ID memang muncul berulang kali di dataset rating, karena satu user bisa memberi rating ke banyak buku. Sehingga adanya duplikat itu normal. Namun, untuk data keseluruhan, tidak ditemukan adanya duplikasi.
+- Visualisasi Distribusi Nilai Book-Rating
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/eefed90b-0991-42ba-9c35-e6f43bf35fda" alt="Distribusi Nilai Book-Rating" width="600"/>
+</div>
+Book Rating bernilai '0' kemungkinan menunjukkan bahwa user tidak memberikan rating eksplisit. Rating ini bisa dianggap sebagai interaksi pasif (misalnya user hanya melihat buku tersebut). Oleh karena itu, nilai rating '0' akan dihilangkan dan hanya rating eksplisit (1–10) yang digunakan untuk algoritma Collaborative Filtering (CF) dan Content-Based Filtering (CBF).
+- Visualisasi Distribusi Jumlah Rating per User dan per Buku
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/8e0172c0-2fd6-47aa-a083-c3637c898bf8" alt="Distribusi Jumlah Rating per User" width="600"/>
+</div>
+
+Terdapat banyak user yang hanya memberikan sedikit rating. Untuk meningkatkan kualitas rekomendasi pada CF, user pasif (dengan hanya 1–2 rating) akan dihapus dari dataset karena dapat menyebabkan matriks interaksi menjadi terlalu sparse (jarang terisi), yang berdampak negatif pada output sistem rekomendasi.
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/75fb2b13-27c6-4ef6-8438-4ee13eb2ba36" alt="Distribusi Jumlah Rating per Buku" width="600"/>
+</div>
+
+Begitu pula dengan banyak buku yang hanya mendapatkan sedikit rating. Hal ini menyebabkan informasi yang terbatas untuk mengenali kemiripan item/user dalam CF, sehingga performa rekomendasi bisa menurun.
+- Visualisasi Boxplot Distribusi Rating Buku
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/e0202b93-0da2-4908-805c-ce5a35f31ca0" alt="Boxplot Distribusi Rating Buku" width="600"/>
+</div>
 
 ## Data Preparation
 Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
