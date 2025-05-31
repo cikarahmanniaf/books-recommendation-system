@@ -281,7 +281,7 @@ Untuk mencegah overfitting, digunakan EarlyStopping dengan memonitor val_root_me
 
 Kelebihan:
 - Dapat memberikan rekomendasi yang sangat personal karena mempertimbangkan pola preferensi pengguna lain.
-- Tidak memerlukan atribut konten buku (judul, penulis, dll) → cocok untuk sistem dengan metadata terbatas.
+- Tidak memerlukan atribut konten buku (judul, penulis, dll), cocok untuk sistem dengan metadata terbatas.
 
 Kekurangan:
 - Masalah cold start untuk pengguna atau item baru (tidak ada riwayat interaksi).
@@ -299,37 +299,76 @@ Kekurangan:
 | Kompleksitas       | Lebih sederhana dan ringan                   | Kompleks dan memerlukan training model            |
 
 ## Evaluation
-Untuk mengukur performa sistem rekomendasi Content-Based Filtering (CBF), digunakan metrik Precision@N. Precision mengukur proporsi rekomendasi yang relevan dari keseluruhan rekomendasi yang diberikan. 
+### Metrik Evaluasi yang Digunakan
 
-Rumus Precision:
+Untuk mengevaluasi sistem rekomendasi, digunakan dua metrik evaluasi yang berbeda:
 
-\[
-\text{Precision@N} = \frac{\text{Jumlah item relevan dalam rekomendasi top-N}}{N}
-\]
+#### 1. Precision@N (untuk Content-Based Filtering)
 
-di mana:
-- *N* adalah jumlah rekomendasi yang diberikan (misalnya 5)
-- Item relevan adalah item yang sesuai dengan preferensi pengguna
+Precision@N mengukur proporsi item relevan di antara N rekomendasi teratas yang diberikan oleh sistem.
 
-Precision cocok untuk sistem rekomendasi karena mengukur keakuratan hasil rekomendasi terhadap preferensi pengguna.
+Formula:
+Precision@N = (Jumlah item relevan dalam rekomendasi top-N) / N
+
+Precision digunakan karena sesuai dengan kebutuhan sistem rekomendasi untuk memberikan hasil yang relevan (bukan semua hasil, seperti recall). Metrik ini cocok untuk mengevaluasi seberapa baik model memberikan rekomendasi yang sesuai dengan preferensi pengguna.
+
+Hasil Evaluasi:
+
+- Anchor Book: *See Jane Run*
+- Buku yang Disukai User:
+  - The First Time
+  - Run Jane Run
+  - Grand Avenue
+  - Lauf, Jane, lauf. Roman.
+  - Olivia Joules and the Overactive Imagination
+- Top-5 Rekomendasi:
+  - the first time
+  - run jane run
+  - grand avenue
+  - lauf, jane, lauf. roman.
+  - olivia joules and the overactive imagination (fielding, helen)
+
+Precision@5 = 0.80
+
+> Artinya, 4 dari 5 buku yang direkomendasikan termasuk dalam daftar buku yang disukai user.
 
 ---
 
-Sebagai contoh, dilakukan evaluasi menggunakan buku acuan "See Jane Run" dengan daftar buku yang disukai user sebagai berikut:
+#### 2. Root Mean Squared Error (RMSE) (untuk Collaborative Filtering)
 
-- The First Time
-- Run Jane Run
-- Grand Avenue
-- Lauf, Jane, lauf. Roman.
-- Olivia Joules and the Overactive Imagination
+RMSE digunakan untuk mengevaluasi model *Collaborative Filtering* berbasis Neural Network. Metrik ini mengukur rata-rata selisih kuadrat antara nilai prediksi dan nilai aktual rating.
 
-Hasil rekomendasi top 5 menunjukkan 4 buku yang direkomendasikan sesuai dengan daftar buku yang disukai, sehingga diperoleh nilai:
+Formula:
+RMSE = sqrt(Σ(y_actual - y_predicted)² / n)
 
-**Precision@5 = 0.80**
+RMSE dipilih karena model memprediksi rating dari pasangan user-item, dan metrik ini dapat menunjukkan seberapa dekat prediksi terhadap rating sebenarnya.
 
-Ini berarti 80% rekomendasi yang diberikan relevan dengan preferensi pengguna, menunjukkan performa yang cukup baik untuk model Content-Based Filtering ini.
+Hasil Evaluasi:
+
+- Model berhenti pada **epoch ke-6** karena early stopping.
+- RMSE Validasi Terbaik: `0.1833`
+
+Visualisasi RMSE selama proses pelatihan:
+![image](https://github.com/user-attachments/assets/177c10a3-8393-4de7-b0fd-2ee2125ada4d)
 
 ---
 
+### Contoh Hasil Rekomendasi (Collaborative Filtering)
 
+- User ID: 57095
+Buku yang Disukai User:
+- The Hitchhiker's Guide to the Galaxy
+- Into the Wild
+- Disclosure
+- Sphere
+- Airframe
+
+Top-5 Rekomendasi dari Model:
+- Harry Potter and the Chamber of Secrets Postcard Book
+- The Return of the King (The Lord of the Rings, Part 3)
+- My Sister's Keeper : A Novel (Picoult, Jodi)
+- Dilbert: A Book of Postcards
+- The Two Towers (The Lord of the Rings, Part 2)
+
+## Conclusion & Recommendation
 
