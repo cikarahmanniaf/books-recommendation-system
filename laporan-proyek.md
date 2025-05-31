@@ -99,6 +99,7 @@ Dalam grafik tersebut, diketahui bahwa panjang ISBN sudah benar ada di angka '10
   <img src="https://github.com/user-attachments/assets/eefed90b-0991-42ba-9c35-e6f43bf35fda" alt="Distribusi Nilai Book-Rating" width="600"/>
 </div>
 Book Rating bernilai '0' kemungkinan menunjukkan bahwa user tidak memberikan rating eksplisit. Rating ini bisa dianggap sebagai interaksi pasif (misalnya user hanya melihat buku tersebut). Oleh karena itu, nilai rating '0' akan dihilangkan dan hanya rating eksplisit (1–10) yang digunakan untuk algoritma Collaborative Filtering (CF) dan Content-Based Filtering (CBF).
+
 - Visualisasi Distribusi Jumlah Rating per User dan per Buku
 
 <div align="center">
@@ -112,6 +113,7 @@ Terdapat banyak user yang hanya memberikan sedikit rating. Untuk meningkatkan ku
 </div>
 
 Begitu pula dengan banyak buku yang hanya mendapatkan sedikit rating. Hal ini menyebabkan informasi yang terbatas untuk mengenali kemiripan item/user dalam CF, sehingga performa rekomendasi bisa menurun.
+
 - Visualisasi Boxplot Distribusi Rating Buku
 
 <div align="center">
@@ -188,8 +190,6 @@ Sistem rekomendasi dibangun untuk menyelesaikan permasalahan pemilihan buku yang
 
 1. Content-Based Filtering (CBF): merekomendasikan buku berdasarkan kesamaan konten (judul dan penulis).
 2. Collaborative Filtering (CF): merekomendasikan buku berdasarkan pola interaksi antar pengguna.
-
----
 
 ### Content-Based Filtering (CBF)
 
@@ -299,15 +299,37 @@ Kekurangan:
 | Kompleksitas       | Lebih sederhana dan ringan                   | Kompleks dan memerlukan training model            |
 
 ## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
+Untuk mengukur performa sistem rekomendasi Content-Based Filtering (CBF), digunakan metrik Precision@N. Precision mengukur proporsi rekomendasi yang relevan dari keseluruhan rekomendasi yang diberikan. 
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+Rumus Precision:
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+\[
+\text{Precision@N} = \frac{\text{Jumlah item relevan dalam rekomendasi top-N}}{N}
+\]
 
-**---Ini adalah bagian akhir laporan---**
+di mana:
+- *N* adalah jumlah rekomendasi yang diberikan (misalnya 5)
+- Item relevan adalah item yang sesuai dengan preferensi pengguna
 
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
+Precision cocok untuk sistem rekomendasi karena mengukur keakuratan hasil rekomendasi terhadap preferensi pengguna.
+
+---
+
+Sebagai contoh, dilakukan evaluasi menggunakan buku acuan "See Jane Run" dengan daftar buku yang disukai user sebagai berikut:
+
+- The First Time
+- Run Jane Run
+- Grand Avenue
+- Lauf, Jane, lauf. Roman.
+- Olivia Joules and the Overactive Imagination
+
+Hasil rekomendasi top 5 menunjukkan 4 buku yang direkomendasikan sesuai dengan daftar buku yang disukai, sehingga diperoleh nilai:
+
+**Precision@5 = 0.80**
+
+Ini berarti 80% rekomendasi yang diberikan relevan dengan preferensi pengguna, menunjukkan performa yang cukup baik untuk model Content-Based Filtering ini.
+
+---
+
+
+
