@@ -76,6 +76,5 @@ Sumber dataset: https://www.kaggle.com/datasets/arashnic/book-recommendation-dat
    pip install -r requirements.txt
    ```
 3. jalan notebook di Jupyter Notebook/Google Colab
-4. 
 
    
