@@ -119,11 +119,69 @@ Begitu pula dengan banyak buku yang hanya mendapatkan sedikit rating. Hal ini me
 </div>
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+Tahapan data preparation dilakukan agar data siap digunakan untuk membangun sistem rekomendasi berbasis Collaborative Filtering (CF) dan Content-Based Filtering (CBF). Proses dilakukan secara sistematis sebagai berikut:
+
+1. Menghapus Kolom Tidak Relevan
+Beberapa kolom seperti `Image-URL-S`, `Image-URL-M`, `Image-URL-L`, dan `ISBN_Length` tidak relevan untuk kebutuhan sistem rekomendasi, sehingga dihapus dari dataframe `books`.
+
+2. Menangani Missing Values
+Nilai kosong pada kolom `Book-Author` dan `Publisher` diisi dengan nilai `'Unknown Author'` dan `'Unknown Publisher'` agar tidak mengganggu proses pengolahan data selanjutnya.
+
+```python
+books['Book-Author'].fillna('Unknown Author', inplace=True)
+books['Publisher'].fillna('Unknown Publisher', inplace=True)
+```
+3. Normalisasi Teks
+Data teks dibersihkan dari spasi berlebih di awal, akhir, maupun tengah teks agar lebih konsisten.
+
+```python
+def clean_text(text):
+    if pd.isnull(text):
+        return ""
+
+    text = text.strip()                      # hapus spasi di awal/akhir
+    text = re.sub(r'\s+', ' ', text)        # hapus spasi berlebih di tengah
+    return text
+
+for col in ['Book-Title', 'Book-Author', 'Publisher']:
+    books[col] = books[col].apply(clean_text)
+```
+4. Penanganan Tahun Terbit yang Tidak Valid
+Kolom 'Year-Of-Publication' mengandung beberapa entri yang tidak valid seperti nama penerbit dan angka di luar jangkauan. Namun, karena tidak digunakan dalam model CF dan CBF, kolom ini dibiarkan apa adanya.
+5. Memfilter User dan Buku
+Agar matriks interaksi tidak terlalu sparse, user yang hanya memberikan kurang dari 3 rating serta buku yang mendapatkan kurang dari 3 rating dihapus.
+
+```python
+# Filter user aktif
+user_counts = ratings['User-ID'].value_counts()
+ratings = ratings[ratings['User-ID'].isin(user_counts[user_counts >= 3].index)]
+
+# Filter buku populer
+book_counts = ratings['ISBN'].value_counts()
+ratings = ratings[ratings['ISBN'].isin(book_counts[book_counts >= 3].index)]
+```
+6. Menghapus rating tidak eksplisit
+Rating dengan nilai 0 dianggap bukan sebagai penilaian eksplisit, sehingga dihapus.
+
+```python
+ratings = ratings[ratings['Book-Rating'] > 0]
+```
+7. Menyiapkan Dataset untuk CF dan CBF
+Dataset cf_data digunakan untuk Collaborative Filtering, sementara cbf_data untuk Content-Based Filtering. Proses ini dilakukan dengan merge antara data ratings dan data books.
+
+```
+cf_data = ratings.merge(books[['ISBN', 'Book-Title']], on='ISBN', how='left')
+cbf_data = ratings.merge(books[['ISBN', 'Book-Title', 'Book-Author']], on='ISBN', how='left')
+```
+8. Menangani Missing Values Setelah Merge
+Setelah proses merge, ditemukan beberapa nilai kosong karena tidak semua ISBN di ratings tersedia di books. Untuk CBF, kolom Book-Title dan Book-Author sangat penting karena digunakan dalam fitur konten. Oleh karena itu, baris yang memiliki nilai kosong dihapus.
+```
+cbf_data = cbf_data.dropna(subset=['Book-Title', 'Book-Author'])
+```
+Untuk CF, kolom Book-Title tidak digunakan secara langsung dalam model, sehingga nilai kosong dibiarkan.
+9. Dataset siap digunakan dalam modelling.
+
 
 ## Modeling
 Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
