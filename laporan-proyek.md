@@ -184,11 +184,119 @@ Untuk CF, kolom Book-Title tidak digunakan secara langsung dalam model, sehingga
 
 
 ## Modeling
-Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
+Sistem rekomendasi dibangun untuk menyelesaikan permasalahan pemilihan buku yang relevan bagi pengguna. Dua pendekatan yang digunakan dalam proyek ini adalah:
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
-- Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
+1. Content-Based Filtering (CBF): merekomendasikan buku berdasarkan kesamaan konten (judul dan penulis).
+2. Collaborative Filtering (CF): merekomendasikan buku berdasarkan pola interaksi antar pengguna.
+
+---
+
+### Content-Based Filtering (CBF)
+
+CBF bekerja dengan mengukur kemiripan antar item berdasarkan fitur kontennya. Dalam kasus ini, fitur yang digunakan adalah `Book-Title` dan `Book-Author`.
+
+Dataset awal `cbf_data` berisi 253.721 entri yang terdiri dari:
+- `User-ID`
+- `ISBN`
+- `Book-Rating`
+- `Book-Title`
+- `Book-Author`
+
+Terdapat **banyak duplikasi pada kolom judul buku** yang disebabkan oleh:
+- Satu buku dibaca oleh banyak user,
+- Perbedaan ISBN pada buku dengan judul sama,
+- Variasi penulisan nama penulis atau penerbit.
+
+Untuk mencegah penggunaan memori yang besar di Google Colab, dilakukan sampling terhadap 5.000 judul buku unik pertama yang ditemukan.
+
+#### Proses Pembentukan Model
+
+1. Ekstraksi Fitur Konten
+   Fitur konten dibentuk dengan menggabungkan judul dan penulis buku, lalu dinormalisasi dalam format huruf kecil.
+
+2. Representasi Teks dengan TF-IDF
+   Fitur konten dikonversi ke dalam representasi numerik menggunakan TF-IDF Vectorizer untuk mengukur pentingnya kata-kata dalam dokumen.
+
+3. Perhitungan Kemiripan (Similarity)
+   Kemiripan antar buku dihitung menggunakan cosine similarity, yang menghasilkan matriks kemiripan antar semua buku dalam sampel.
+
+4. Fungsi Rekomendasi
+   Dibuat fungsi `recommend_books_cbf(title)` yang menerima input judul buku, lalu mengembalikan daftar top-N buku yang paling mirip.
+
+Contoh Hasil Rekomendasi
+```
+recommend_books_cbf('See Jane Run')
+```
+
+Output rekomendasi:
+- The Little Friend  
+- Run for Your Life  
+- The Girls  
+- What the Dead Know  
+- The Weight of Water  
+
+> Rekomendasi didasarkan pada kemiripan konten judul dan penulis dengan buku yang dicari.
+
+---
+
+#### Analisis Kelebihan dan Kekurangan Pendekatan CBF
+
+Kelebihan:
+- Tidak membutuhkan interaksi pengguna lain yang akan efektif untuk pengguna baru.
+- Dapat menjelaskan alasan rekomendasi karena berbasis atribut konten.
+
+Kekurangan:
+- Tidak bisa merekomendasikan item yang sangat berbeda dari preferensi sebelumnya.
+- Kualitas rekomendasi sangat bergantung pada informasi konten yang tersedia.
+- Rentan terhadap cold-start item jika buku baru tidak memiliki data konten lengkap.
+
+---
+### Collaborative Filtering (CF)
+
+Pendekatan Collaborative Filtering (CF) memanfaatkan interaksi antar pengguna (user-item interaction) untuk memberikan rekomendasi. Dalam proyek ini digunakan pendekatan model-based CF menggunakan *neural network (deep learning)*, bukan teknik memory-based seperti k-NN.
+
+1. Data awal mencakup `User-ID`, `ISBN`, dan `Book-Rating`.
+2. Encoding dilakukan untuk mengubah `User-ID` dan `ISBN` menjadi ID numerik agar kompatibel dengan algoritma machine learning.
+3. Rating dinormalisasi ke skala [0, 1] agar stabil saat proses training.
+4. Dataset dibagi menjadi data latih (80%) dan data validasi (20%).
+
+Model neural network yang digunakan bernama `RecommenderNet`, terdiri dari:
+
+- Embedding layer untuk merepresentasikan user dan buku dalam bentuk vektor berdimensi tetap (`embedding_size` = 50).
+- Dot product antara vektor user dan buku digunakan untuk memodelkan interaksi di antara keduanya.
+- Bias term ditambahkan untuk masing-masing user dan buku agar model lebih fleksibel.
+- Aktivasi akhir menggunakan fungsi sigmoid agar output berada di rentang [0, 1].
+
+```python
+model = RecommenderNet(num_users, num_books, embedding_size=50)
+model.compile(
+    loss=tf.keras.losses.MeanSquaredError(),
+    optimizer=keras.optimizers.Adam(learning_rate=0.001),
+    metrics=[tf.keras.metrics.RootMeanSquaredError()]
+)
+``` 
+Untuk mencegah overfitting, digunakan EarlyStopping dengan memonitor val_root_mean_squared_error.
+
+#### Analisis Kelebihan dan Kekurangan Pendekatan CF
+
+Kelebihan:
+- Dapat memberikan rekomendasi yang sangat personal karena mempertimbangkan pola preferensi pengguna lain.
+- Tidak memerlukan atribut konten buku (judul, penulis, dll) → cocok untuk sistem dengan metadata terbatas.
+
+Kekurangan:
+- Masalah cold start untuk pengguna atau item baru (tidak ada riwayat interaksi).
+- Butuh cukup banyak data interaksi agar model dapat belajar representasi yang baik.
+- Lebih kompleks dan memerlukan sumber daya komputasi lebih besar dibanding CBF.
+
+---
+### Perbandingan Content-Based Filtering (CBF) dan Collaborative Filtering (CF)
+
+| Aspek              | Content-Based Filtering                      | Collaborative Filtering                           |
+|--------------------|----------------------------------------------|---------------------------------------------------|
+| Data yang Dibutuhkan | Atribut konten item (judul, penulis)         | Riwayat interaksi user-item                       |
+| Cold Start         | Tidak cocok untuk item baru                  | Tidak cocok untuk user/item baru                  |
+| Personalization    | Terbatas pada preferensi sebelumnya          | Sangat personal, berdasarkan pengguna serupa      |
+| Kompleksitas       | Lebih sederhana dan ringan                   | Kompleks dan memerlukan training model            |
 
 ## Evaluation
 Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
