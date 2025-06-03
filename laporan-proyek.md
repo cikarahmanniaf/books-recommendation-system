@@ -295,13 +295,12 @@ recommend_books_cbf('See Jane Run')
 ```
 Output:
 ```
-['The Little Friend',
- 'Run for Your Life',
- 'The Girls',
- 'What the Dead Know',
- 'The Weight of Water']
+['The First Time',
+ 'Run Jane Run',
+ 'Grand Avenue',
+ 'Lauf, Jane, Lauf. Roman',
+ 'Olivia Joules and the Overactive Imagination']
 ```
-
 Nilai kemiripan (similarity) akan lebih optimal jika variasi dan jumlah data cbf_data_sample lebih besar. Namun, karena keterbatasan memori pada Google Colab, hanya 5.000 judul buku unik yang digunakan dalam model ini. Hal ini dapat menyebabkan beberapa buku tidak muncul atau kemiripan kurang maksimal.
 
 ---
